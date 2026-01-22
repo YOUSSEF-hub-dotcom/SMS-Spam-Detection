@@ -1,0 +1,11 @@
+name: SMS_Spam_Classifier
+
+conda_env: conda.yaml
+
+entry_points:
+  main:
+    parameters:
+      alpha: {type: float, default: 0.1}
+      max_features: {type: int, default: 3000}
+    command: "python main.py --alpha {alpha} --max_features {max_features}"
+
