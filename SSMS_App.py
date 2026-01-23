@@ -3,7 +3,7 @@ import requests
 
 st.set_page_config(page_title="SMS Spam Classifier", page_icon="📩", layout="centered")
 
-st.title("📩 SMS Spam Classifier")
+st.title("📩 SMS Spam Detection")
 st.write("Enter your message below to check if it is **Spam** or **Ham (Not Spam)**.")
 
 message = st.text_area("✍️ Write your message:")
@@ -16,7 +16,6 @@ if st.button("🔍 Predict"):
             if response.status_code == 200:
                 result = response.json()
 
-                # تصحيح المسميات هنا لتطابق الـ API
                 label = result["prediction"]
                 prob = result["probability"]
 
@@ -27,6 +26,5 @@ if st.button("🔍 Predict"):
             else:
                 st.error(f"❌ API Error: {response.status_code}")
         except Exception as e:
-            # هنا هيطبع لك الخطأ بالظبط لو حصلت حاجة
             st.error(f"⚠️ Connection Error: {e}")
 
