@@ -58,9 +58,10 @@ def run_mlflow_lifecycle(results):
         mlflow.log_artifact("confusion_matrix.png")
         plt.close()
 
-        input_example = pd.DataFrame({"final_message": ["urgent prize win money now"]})
+        input_example = pd.DataFrame({"final_message": ["urgent prize win money now", "hello how are you"]})
 
-        output_example = pd.DataFrame({"is_spam": [1]})
+        real_preds = best_model.predict(input_example["final_message"])
+        output_example = pd.DataFrame({"is_spam": real_preds})
 
         signature = infer_signature(input_example, output_example)
 
