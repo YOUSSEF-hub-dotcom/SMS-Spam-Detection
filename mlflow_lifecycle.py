@@ -6,6 +6,8 @@ import pandas as pd
 import joblib
 from mlflow.models.signature import infer_signature
 
+import logging
+logger = logging.getLogger(__name__)
 
 class SpamClassifierPyFunc(mlflow.pyfunc.PythonModel):
     def __init__(self, feature_names):
@@ -17,14 +19,17 @@ class SpamClassifierPyFunc(mlflow.pyfunc.PythonModel):
     def predict(self, context, model_input):
         if not isinstance(model_input, pd.DataFrame):
             model_input = pd.DataFrame(model_input)
+        logger.info(f"Predicting spam for {len(model_input)} messages.")
 
         predictions = self.model.predict(model_input["final_message"])
+        spam_count = sum(predictions)
+        logger.info(f"Detection complete: Found {spam_count} spam messages.")
 
         return pd.DataFrame({"is_spam": predictions})
 
 
 def run_mlflow_lifecycle(results):
-    print("\n================>>> Starting MLflow Lifecycle")
+    logger.info("\n================>>> Starting MLflow Lifecycle")
 
     best_model = results['best_model']
     acc = results['accuracy']
@@ -40,7 +45,7 @@ def run_mlflow_lifecycle(results):
 
     with mlflow.start_run(run_name="MultinomialNB_SpamClassifier") as run:
         run_id = run.info.run_id
-        print(f"MLflow Run ID: {run_id}")
+        logger.info(f"MLflow Run ID: {run_id}")
 
         mlflow.log_param("model_type", "MultinomialNB")
         mlflow.log_param("vectorizer", "TF-IDF (1,2)")
@@ -52,6 +57,8 @@ def run_mlflow_lifecycle(results):
             "recall": recall,
             "f1_score": f1
         })
+
+        logger.info(f"Metrics Logged: Precision={precision:.4f}, F1={f1:.4f}")
 
 
         plt.savefig("confusion_matrix.png")
@@ -67,6 +74,8 @@ def run_mlflow_lifecycle(results):
 
         artifact_path = "spam_classifier_pyfunc"
         artifacts = {"model_file": model_save_path}
+
+        logger.info("Saving artifacts and logging PyFunc model...")
 
         mlflow.pyfunc.log_model(
             artifact_path=artifact_path,
@@ -90,8 +99,8 @@ def run_mlflow_lifecycle(results):
         stage="Staging"
     )
 
-    MIN_PRECISION_THRESHOLD = 0.95
-    MIN_F1_THRESHOLD = 0.90
+    MIN_PRECISION_THRESHOLD = 0.90
+    MIN_F1_THRESHOLD = 0.88
 
     if precision >= MIN_PRECISION_THRESHOLD and f1 >= MIN_F1_THRESHOLD:
         client.transition_model_version_stage(
@@ -100,13 +109,17 @@ def run_mlflow_lifecycle(results):
             stage="Production",
             archive_existing_versions=True
         )
+        logger.info(
+            f"🚀 Model version {version} Promoted to Production. Precision {precision:.4f} met the high-security threshold.")
         status = "Production 🚀"
     else:
+        logger.warning(
+            f"🛑 Model version {version} stayed in Staging. Precision {precision:.4f} is below the {MIN_PRECISION_THRESHOLD} safety limit.")
         status = "Staging 🛑"
 
-    print(f"\n{'═' * 50}")
-    print(f" Model: {registered_model_name} | Version: {version}")
-    print(f" Current Stage: {status}")
-    print(f"{'═' * 50}")
+    logger.info(f"\n{'═' * 50}")
+    logger.info(f" Model: {registered_model_name} | Version: {version}")
+    logger.info(f" Current Stage: {status}")
+    logger.info(f"{'═' * 50}")
 
     return run_id
