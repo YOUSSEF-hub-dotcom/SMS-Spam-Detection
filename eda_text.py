@@ -5,32 +5,35 @@ from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from sklearn.preprocessing import LabelEncoder
 
+import logging
+
+logger = logging.getLogger(__name__)
 
 def perform_eda_and_pre(df):
 
-    print("================>>> Exploratory Data Analysis")
-    print("frequence Values in Label columns")
+    logger.info("================>>> Exploratory Data Analysis")
+    logger.info("frequence Values in Label columns")
     print(df['label'].value_counts())
 
-    print("number of characters")
+    logger.info("number of characters")
     df['num_characters'] = df['message'].apply(lambda x: len(x))
 
-    print("number of words")
+    logger.info("number of words")
     df['num_words'] = df['message'].apply(lambda x: len(nltk.word_tokenize(x)))
 
-    print("number of sentences")
+    logger.info("number of sentences")
     df['num_sentences'] = df['message'].apply(lambda x: len(nltk.sent_tokenize(x)))
     print(df.head())
 
-    print("Statistical Operation in all Data")
+    logger.info("Statistical Operation in all Data")
     Statis_Opera = df[['num_characters', 'num_words', 'num_sentences']].describe().round()
     print(Statis_Opera)
 
-    print("Statistical Operation (Ham)")
+    logger.info("Statistical Operation (Ham)")
     Statis_Opera_Ham = df[df['label'] == 'ham'][['num_characters', 'num_words', 'num_sentences']].describe().round()
     print(Statis_Opera_Ham)
 
-    print("Statistical Operation (Spam)")
+    logger.info("Statistical Operation (Spam)")
     Statis_Opera_Spam = df[df['label'] == 'spam'][['num_characters', 'num_words', 'num_sentences']].describe().round()
     print(Statis_Opera_Spam)
 
@@ -42,7 +45,7 @@ def perform_eda_and_pre(df):
     print("Correlation Matrix")
     print(correlation_matrix)
 
-    print("================>>> Text Preprocessing ")
+    logger.info("================>>> Text Preprocessing ")
 
     df['lower_message'] = df['message'].str.lower()
 
@@ -63,6 +66,6 @@ def perform_eda_and_pre(df):
 
     df['final_message'] = df['stemmed_tokens'].apply(lambda tokens: ' '.join(tokens))
 
-    print("✅ EDA and Preprocessing Done.")
+    logger.info("✅ EDA and Preprocessing Done.")
 
     return df, correlation_matrix
