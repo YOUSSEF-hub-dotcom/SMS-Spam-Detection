@@ -1,11 +1,12 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 from wordcloud import WordCloud
+import logging
 
+logger = logging.getLogger(__name__)
 
 def run_visualizations(df, correlation_matrix):
-
-    print("================>>> Visualization of Data")
+    logger.info("================>>> Visualization of Data")
 
     plt.figure(figsize=(6, 6))
     plt.pie(df['label'].value_counts(), labels=['Ham', 'Spam'], autopct='%1.0f%%')
@@ -34,7 +35,7 @@ def run_visualizations(df, correlation_matrix):
     plt.tight_layout()
     plt.show()
 
-    print("Generating Pairplot... please wait.")
+    logger.info("Generating Pairplot... please wait.")
     sns.pairplot(df[['label', 'num_characters', 'num_words', 'num_sentences']], hue='label')
     plt.show()
 
@@ -43,7 +44,7 @@ def run_visualizations(df, correlation_matrix):
     plt.title('Correlation Between Numerical Features', fontsize=14)
     plt.show()
 
-    print("Generating WordCloud...")
+    logger.info("Generating WordCloud...")
     all_text = " ".join(df['final_message'])
     wordcloud = WordCloud(width=800, height=400, background_color='white').generate(all_text)
     plt.figure(figsize=(10, 6))
@@ -52,4 +53,4 @@ def run_visualizations(df, correlation_matrix):
     plt.axis("off")
     plt.show()
 
-    print(" All Visualizations displayed.")
+    logger.info(" All Visualizations displayed.")
