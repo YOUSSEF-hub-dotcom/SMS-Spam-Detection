@@ -7,7 +7,7 @@ import mlflow_lifecycle
 import logging
 from logger_config import setup_logging
 setup_logging()
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("Main")
 
 def main():
     parser = argparse.ArgumentParser(description="Spam Classifier MLflow Project")
