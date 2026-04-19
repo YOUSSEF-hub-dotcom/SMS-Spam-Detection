@@ -3,7 +3,7 @@ import seaborn as sns
 from wordcloud import WordCloud
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("Visualization")
 
 def run_visualizations(df, correlation_matrix):
     logger.info("================>>> Visualization of Data")
