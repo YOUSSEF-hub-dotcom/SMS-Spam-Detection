@@ -6,7 +6,7 @@ import nltk
 
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("Data_Pipeline")
 
 nltk.download('punkt')
 nltk.download('punkt_tab')
