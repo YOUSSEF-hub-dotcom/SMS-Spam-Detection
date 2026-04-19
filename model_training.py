@@ -11,7 +11,7 @@ from sklearn.metrics import (
 )
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("Model_Training")
 
 def train_and_evaluate_model(df, alpha_val, max_feat):
 
