@@ -7,7 +7,7 @@ import joblib
 from mlflow.models.signature import infer_signature
 
 import logging
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("Main")
 
 class SpamClassifierPyFunc(mlflow.pyfunc.PythonModel):
     def __init__(self, feature_names):
@@ -110,12 +110,12 @@ def run_mlflow_lifecycle(results):
             archive_existing_versions=True
         )
         logger.info(
-            f"🚀 Model version {version} Promoted to Production. Precision {precision:.4f} met the high-security threshold.")
-        status = "Production 🚀"
+            f" Model version {version} Promoted to Production. Precision {precision:.4f} met the high-security threshold.")
+        status = "Production "
     else:
         logger.warning(
-            f"🛑 Model version {version} stayed in Staging. Precision {precision:.4f} is below the {MIN_PRECISION_THRESHOLD} safety limit.")
-        status = "Staging 🛑"
+            f" Model version {version} stayed in Staging. Precision {precision:.4f} is below the {MIN_PRECISION_THRESHOLD} safety limit.")
+        status = "Staging "
 
     logger.info(f"\n{'═' * 50}")
     logger.info(f" Model: {registered_model_name} | Version: {version}")
