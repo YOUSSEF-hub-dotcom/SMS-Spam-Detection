@@ -7,7 +7,7 @@ from sklearn.preprocessing import LabelEncoder
 
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("EDA_Text")
 
 def perform_eda_and_pre(df):
 
@@ -66,6 +66,6 @@ def perform_eda_and_pre(df):
 
     df['final_message'] = df['stemmed_tokens'].apply(lambda tokens: ' '.join(tokens))
 
-    logger.info("✅ EDA and Preprocessing Done.")
+    logger.info(" EDA and Preprocessing Done.")
 
     return df, correlation_matrix
